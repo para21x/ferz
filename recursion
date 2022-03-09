@@ -1,0 +1,62 @@
+#include <iostream>
+using namespace std;
+int a[8][8];
+void sq(int i, int j) {
+	for (int x = 0; x < 8; x++) {
+		a[x][j]++;
+		a[i][x]++;
+		int f;
+		f = j - i + x;
+		if (f >= 0 && f < 8)
+			a[x][f]++;
+		f = j + i - x;
+		if (f >= 0 && f < 8)
+			a[x][f]++;
+	}
+	a[i][j] = -1;
+}
+void rq(int i, int j) {
+	for (int x = 0; x < 8; x++) {
+		a[x][j]--;
+		a[i][x]--;
+		int f;
+		f = j - i + x;
+		if (f >= 0 && f < 8)
+			a[x][f]--;
+		f = j + i - x;
+		if (f >= 0 && f < 8)
+			a[x][f]--;
+	}
+	a[i][j] = 0;
+}
+
+bool tq(int i) {
+	bool result = false;
+	for (int j = 0; j < 8; j++) {
+		if (a[i][j] == 0) {
+			sq(i, j);
+			if (i == 7)
+				result = true;
+			else {
+				if (!(result = tq(i + 1)))
+					rq(i, j);
+			}
+		}
+		if (result)
+			break;
+	}
+	return result;
+}
+int main() {
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			a[i][j] = 0;
+	tq(0);
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (a[i][j] == -1) cout << "* ";
+			else cout << "0 ";
+		}
+		cout << endl;
+	}
+}
